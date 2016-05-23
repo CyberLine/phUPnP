@@ -1,0 +1,20 @@
+{
+  "name": "cyberline/phupnp",
+  "type": "library",
+  "description": "PHP based UPnP device discovery",
+  "minimum-stability": "dev",
+  "homepage": "https://github.com/CyberLine/phUPnP",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "Alexander Over",
+      "email": "cyberline@php.net"
+    }
+  ],
+  "require": {
+    "php": ">=5.3.0"
+  },
+  "autoload": {
+    "psr-4": {"Cyberline\\UPnP\\": "src/"}
+  }
+}
