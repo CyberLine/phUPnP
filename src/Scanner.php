@@ -135,14 +135,7 @@ class Scanner implements \JsonSerializable
 
         foreach ($this->fetchUpnpXmlDeviceInfo($targets) as $location => $xml) {
             if (!empty($xml)) {
-                try {
-                    $simpleXML = new \SimpleXMLElement($xml);
-                    if (!property_exists($simpleXML, 'URLBase')) {
-                        $location = parse_url($location);
-                        $simpleXML->URLBase = sprintf('%s://%s:%d/', $location['scheme'], $location['host'], $location['port']);
-                    }
-                    array_push($this->devices, $simpleXML);
-                } catch (\Exception $e) { /* SimpleXML parsing failed */ }
+                $this->parseXmlDeviceResponse($location, $xml);
             }
         }
 
@@ -231,6 +224,22 @@ class Scanner implements \JsonSerializable
         }
 
         return $parsedResponse;
+    }
+
+    /**
+     * @param $location
+     * @param $xml
+     */
+    protected function parseXmlDeviceResponse($location, $xml)
+    {
+        try {
+            $simpleXML = new \SimpleXMLElement($xml);
+            if (!property_exists($simpleXML, 'URLBase')) {
+                $location = parse_url($location);
+                $simpleXML->URLBase = sprintf('%s://%s:%d/', $location['scheme'], $location['host'], $location['port']);
+            }
+            array_push($this->devices, $simpleXML);
+        } catch (\Exception $e) { /* SimpleXML parsing failed */ }
     }
 
     /**
