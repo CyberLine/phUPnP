@@ -5,7 +5,7 @@ namespace CyberLine\phUPnP;
 /**
  * Class Scanner
  *
- * @package CyberLine\UPnP
+ * @package CyberLine\phUPnP
  * @author Alexander Over <cyberline@php.net>
  */
 class Scanner implements \JsonSerializable
