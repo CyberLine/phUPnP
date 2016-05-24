@@ -134,12 +134,16 @@ class Scanner implements \JsonSerializable
         }
 
         foreach ($this->fetchUpnpXmlDeviceInfo($targets) as $location => $xml) {
-            $simpleXML = new \SimpleXMLElement($xml);
-            if (!property_exists($simpleXML, 'URLBase')) {
-                $location = parse_url($location);
-                $simpleXML->URLBase = sprintf('%s://%s:%d/', $location['scheme'], $location['host'], $location['port']);
+            if (!empty($xml)) {
+                try {
+                    $simpleXML = new \SimpleXMLElement($xml);
+                    if (!property_exists($simpleXML, 'URLBase')) {
+                        $location = parse_url($location);
+                        $simpleXML->URLBase = sprintf('%s://%s:%d/', $location['scheme'], $location['host'], $location['port']);
+                    }
+                    array_push($this->devices, $simpleXML);
+                } catch (\Exception $e) { /* SimpleXML parsing failed */ }
             }
-            array_push($this->devices, $simpleXML);
         }
 
         return $this->devices;
@@ -244,6 +248,7 @@ class Scanner implements \JsonSerializable
         foreach ($targets as $key => $target) {
             $curl[$key] = curl_init();
             curl_setopt($curl[$key], CURLOPT_URL, $target);
+            curl_setopt($curl[$key], CURLOPT_TIMEOUT, $this->timeout);
             curl_setopt($curl[$key], CURLOPT_RETURNTRANSFER, true);
             curl_multi_add_handle($multi, $curl[$key]);
         }
